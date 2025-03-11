@@ -1,7 +1,7 @@
 default_env: &default
   adapter: postgresql
   encoding: unicode
-  database: s_z
+  database: hackmoment_db
 
 
 development:
