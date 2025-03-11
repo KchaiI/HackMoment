@@ -1,0 +1,251 @@
+*{
+  box-sizing: border-box;
+}
+
+/* logoと同じフォントを適応 */
+/* @font-face {
+  font-family: 'BradleyHandBold';
+  src: url('/font/BradleyHandBold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+} */
+
+body{
+    margin: 0;
+    padding: 0;
+    /* font-family: 'BradleyHandBold', sans-serif; */
+    background-color: #fff;
+}
+
+a{
+    text-decoration: none;
+    color: #333;
+}
+
+p{
+    margin: 0;
+}
+
+main#unauthed-main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #EEF0F3;
+}
+
+.unauthed-card{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 696px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+  padding: 48px 100px;
+  gap: 32px;
+}
+
+.unauthed-card form{
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.unauthed-card input{
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 3px solid #D8DADE;
+  box-shadow:inset 0 2px 3px rgba(0,0,0,0.16);
+}
+
+.unauthed-card input::placeholder{
+  color: #878B93;
+}
+
+.unauthed-card button{
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #FB5896;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.16);
+}
+
+.unauthed-card p{
+  font-size: 16px;
+  color: #383838;
+}
+
+.unauthed-card p a{
+  color: #FB5896;
+}
+
+main#authed-main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+section#nav-left{
+    width: 166px;
+    padding: 12px 24px;
+    height: 100vh;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+section#nav-right{
+  width:166px;
+  height:100vh;
+}
+
+.active{
+  font-weight: bold;
+}
+
+#nav-left-items{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%;
+}
+
+.nav-left-item{
+  
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+#nav-left-user-info{
+  display: flex;
+  flex-direction: column;
+}
+
+#nav-left-user-name{
+  font-size: 18px;
+  font-weight: 500;
+  color: #000;
+}
+
+#nav-left-user-id{
+  font-size: 12px;
+  color: #878B93;
+}
+
+/* main */
+section#authed-main-section{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  min-width: 910px;
+  border-right: 1px solid #DBDBDB;
+  border-left: 1px solid #DBDBDB;
+}
+
+#authed-main-header{
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 ;
+  border-bottom: 1px solid #DBDBDB;
+  width: 100%;
+}
+
+#authed-detail-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #DBDBDB;
+  width: 100%;
+  padding-left: 16px;
+  gap: 8px;
+}
+
+#authed-detail-header a{
+  display: flex;
+}
+
+#authed-main-header p , #authed-detail-header p{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#post-form{
+  width: 100%;
+  position: relative;
+}
+
+#post-form textarea{
+  width: 100%;
+  padding: 20px;
+  border:none;
+  border-bottom: 1px solid #DBDBDB;
+  /* padding: 0 0 92px 0; */
+  height: 132px;
+  resize: none;
+  font-size: 20px;
+}
+
+#post-form textarea::placeholder{
+  color: #878B93;;
+}
+
+#post-form button{
+  position: absolute;
+  right: 16px;
+  bottom: 24px;
+  background-color: #FB5896;
+  border: none;
+  color: #fff;
+  border-radius: 30px;
+  padding:12px 24px;
+  font-weight: bold;
+}
+
+.post{
+  width: 100%;
+  padding: 12px 24px;
+  border-bottom: 1px solid #DBDBDB;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.post-info{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.post-user-name{
+  font-weight: bold;
+}
+.post-user-id{
+  color: #878B93;
+}
+.post-created-at{
+  color: #878B93;
+}
+.post-comment-info{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+}

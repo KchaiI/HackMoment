@@ -1,0 +1,36 @@
+
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z</title>
+  <%# fontを適応 %>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="shortcut icon" href="img/favicon.ico"> 
+</head>
+<body>
+  <% if logged_in? %>
+    <main id="authed-main">
+      <!-- 左ナビゲーション -->
+      <section id="nav-left">
+        <%= erb :'nav-left' %>
+      </section>
+      <!-- メインコンテンツ -->
+      <section id="authed-main-section">
+        <%= yield %>
+      </section>
+      <!-- 右ナビゲーション -->
+      <section id="nav-right">
+        <%= erb :'nav-right' %>
+      </section>
+    </main>
+  <% else %>
+    <main id="unauthed-main">
+      <%= yield %>
+    </main>
+  <% end %>
+</body>
+</html>

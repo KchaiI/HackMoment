@@ -1,0 +1,32 @@
+<div id="authed-detail-header">
+	<a href="/">
+		<img src="/img/back-arrow.svg" width="18px" height="21px" alt="back-arrow">
+	</a>
+  <p>ポストする</p>    
+</div>
+<!-- 穴埋めをしよう -->
+<div class="post">
+	<div class="post-info">
+    <p class="post-user-name"><%=  %></p>
+    <p class="post-user-id">@<%=  %></p>
+    <p class="post-created-at"><%=  %></p>
+  </div>
+  <p><%=  %></p>
+  <div class="post-comment-info">
+    <img src="/img/comment.svg" alt="comment" width="21px" height="21px">
+    <p><%=  %></p>
+  </div>
+</div>
+
+<form action="" method="post" id="post-form">
+		<input type="hidden" name="post_id" value="<%=  %>">
+		<input type="hidden" name="user_name" value="<%=  %>">
+    <textarea type="text" name="content" placeholder="返信をポスト"></textarea>
+    <button type="submit">返信する</button>
+</form>
+<% #コメント %>
+  <div class="post">
+    <p class="post-user-name"><%=  %></p>
+    <p><%=  %></p>
+  </div>
+<% end %>

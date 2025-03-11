@@ -1,0 +1,33 @@
+<% @LEFT_NAVS=[
+    { href: "/",name: "ホーム",icon: "home.svg"},
+    { href: "/logout",name: "ログアウト",icon: "logout.svg",},
+  ]
+  
+  @LEFT_NAVS.each do |nav|
+    nav[:isActive] = request.path == nav[:href]
+end %>
+
+<a href="/">
+	<img alt="logo" width="44px" height="41px" src="/img/logo.svg"/>
+</a>
+
+<div id="nav-left-items">
+    <% @LEFT_NAVS.each do |nav| %>
+        <% if nav[:isActive]%>
+            <a href="<%= nav[:href] %>" class="nav-left-item active">
+                <img alt="<%= nav[:name] %>" width="22px" height="22px" src="/img/active-<%= nav[:icon] %>"/>
+                <p><%= nav[:name] %></p>
+            </a>
+        <% else %>
+            <a href="<%= nav[:href] %>" class="nav-left-item">
+                <img alt="<%= nav[:name] %>" width="22px" height="22px" src="/img/<%= nav[:icon] %>"/>
+                <p><%= nav[:name] %></p>
+            </a>
+        <% end %>
+    <% end %>
+</div>
+
+<div id="nav-left-user-info">
+    <p id="nav-left-user-name"><%= session[:user_name] %></p>
+    <p id="nav-left-user-id">@<%= session[:user_id]%></p>
+</div>
