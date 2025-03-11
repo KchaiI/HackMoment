@@ -3,7 +3,6 @@ default_env: &default
   encoding: unicode
   database: hackmoment_db
 
-
 development:
   <<: *default
 
