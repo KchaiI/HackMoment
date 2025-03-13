@@ -24,7 +24,7 @@ before do
     @isAuthed = logged_in?
 end
 
-#login,signin,logout
+#login,signin,logout################################
 #singin
 get '/signup' do
     erb :signup
@@ -64,7 +64,30 @@ get '/logout' do
     session.clear
     redirect '/login'
 end
+###########################################
+
 
 get '/' do
   erb :index
 end
+
+
+# 投稿機能#################################
+get '/post' do
+    @posts = Post.order(created_at: :desc)
+    erb :index
+end
+
+post '/post' do
+    if @isAuthed
+        post = Post.create(
+                img: params[:img],
+                text: params[:text],
+                # user_id: session[:user_id]
+                )
+        redirect '/'
+    else
+        redirect '/login'
+    end
+end
+
