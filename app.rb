@@ -91,3 +91,14 @@ post '/post' do
     end
 end
 
+
+# 通知機能#################################
+get '/notification' do
+    
+end
+
+# スケジュール登録#########################
+post '/schedule' do
+    
+end
+
