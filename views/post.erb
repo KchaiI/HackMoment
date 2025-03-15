@@ -1,0 +1,23 @@
+<div id="authed-main-header">
+  <p>開発状況を投稿しよう</p>    
+</div>
+
+<form action="/post-content" method="post" id="post-form">
+  <textarea type="text" name="content" placeholder="いまなにしてる？"></textarea>
+  <button type="submit">ポストする</button>
+</form>
+
+<% @posts.each do |post| %>
+  <a href="/<%= post.id %>"  class="post">
+    <div class="post-info">
+      <p class="post-user-name"><%= post.user.name %></p>
+      <p class="post-user-id">@<%=  %></p>
+      <p class="post-created-at"><%= post.created_at %></p>
+    </div>
+    <p><%= post. %></p>
+    <div class="post-comment-info">
+      <img src="/img/comment.svg" alt="comment" width="21px" height="21px">
+      <p><%= %></p>
+    </div>
+  </a>
+<% end %>
