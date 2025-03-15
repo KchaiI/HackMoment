@@ -69,7 +69,7 @@ post '/signup' do
     
     if user.persisted?
         session[:user_id] = user.id
-        redirect '/login'
+        redirect '/'
     else
         redirect '/signup'
     end
@@ -107,7 +107,7 @@ end
 # end
 
 get '/' do
-    erb :signup
+    erb :login
 end
 
 

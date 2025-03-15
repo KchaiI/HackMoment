@@ -14,15 +14,12 @@
 <body>
   <% if logged_in? %>
     <main id="authed-main">
-       左ナビゲーション 
       <section id="nav-left">
         <%= erb :'nav-left' %>
       </section>
-       メインコンテンツ 
       <section id="authed-main-section">
         <%= yield %>
       </section>
-       右ナビゲーション 
       <section id="nav-right">
         <%= erb :'nav-right' %>
       </section>
