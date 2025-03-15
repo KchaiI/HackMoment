@@ -105,10 +105,28 @@ end
 # 投稿機能#################################
 post '/post' do
     if @isAuthed
+        img_url = nil
+
+        if params[:img] && params[:img][:tempfile]
+            filename = params[:img][:filename]
+            tempfile = params[:img][:tempfile]
+    
+            unique_filename = "#{SecureRandom.uuid}_#{filename}"
+            save_path = "./public/uploads/#{unique_filename}"
+    
+            # 画像を保存
+            File.open(save_path, 'wb') do |f|
+                f.write(tempfile.read)
+            end
+    
+            # DBには相対パスを保存
+            img_url = "/uploads/#{unique_filename}"
+        end
+        
         post = Post.create(
-                img: params[:img],
+                img: img_url,
                 text: params[:text],
-                # user_id: session[:user_id]
+                user_id: session[:user_id]
                 )
         redirect '/'
     else
