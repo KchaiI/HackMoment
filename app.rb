@@ -107,7 +107,7 @@ end
 # end
 
 get '/' do
-    erb :schedule
+    erb :signup
 end
 
 
