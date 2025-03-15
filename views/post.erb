@@ -7,6 +7,16 @@
   <button type="submit">ポストする</button>
 </form>
 
+<form action="/posts" method="post" enctype="multipart/form-data">
+  <label for="content">コメント:</label><br>
+  <textarea name="content" id="content" rows="4" cols="50" required></textarea><br><br>
+
+  <label for="image">画像を選択:</label><br>
+  <input type="file" name="image" id="image" accept="image/*"><br><br>
+
+  <button type="submit">投稿する</button>
+</form>
+
 <% @posts.each do |post| %>
   <a href="/<%= post.id %>"  class="post">
     <div class="post-info">
