@@ -3,6 +3,7 @@ require 'bcrypt'
 Bundler.require
 
 ActiveRecord::Base.establish_connection
+ActiveRecord::Base.default_timezone = :local
 
 class User < ActiveRecord::Base
     has_secure_password

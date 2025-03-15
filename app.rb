@@ -1,12 +1,16 @@
 require "bundler/setup"
 Bundler.require
 require "sinatra/reloader" if development?
-require "./models.rb"
 require 'fileutils'
 require 'securerandom'
+require 'active_support/all'
 set :public_folder, 'public'
 require_relative "utils/date.rb"
+Time.zone = ActiveSupport::TimeZone['Asia/Tokyo']
+puts "Time.zone.inspect => #{Time.zone.inspect}"
 
+
+require "./models.rb"
 enable :sessions
 
 # セッションの有効期限設定
@@ -25,6 +29,10 @@ end
 # 全てのリクエストの前に認証状態更新
 before do
     @isAuthed = logged_in?
+    puts "Current Time.zone: #{Time.zone.inspect}"
+  puts "Current ActiveRecord timezone: #{ActiveRecord::Base.default_timezone}"
+  puts "Current Ruby Time: #{Time.now}"
+  puts "Current Ruby Time (JST): #{Time.now.in_time_zone('Asia/Tokyo')}"
 end
 
 #login,signin,logout################################
@@ -55,8 +63,10 @@ post '/signup' do
         email: params[:email],
         password: params[:password],
         password_confirmation: params[:password_confirmation],
-        icon_url: icon_url
+        icon_url: icon_url,
+        created_at: Time.now.in_time_zone('Asia/Tokyo')
     )
+    puts "User create time #{user.created_at}"
     
     if user.persisted?
         session[:user_id] = user.id
