@@ -33,91 +33,38 @@ get '/signup' do
     erb :signup
 end
 
-# post '/signup' do
-#     icon_url = nil
-
-#     if params[:file] && params[:file][:tempfile]
-#         filename = params[:file][:filename]
-#         tempfile = params[:file][:tempfile]
-    
-#         # ファイル名の競合を防ぐためにUUIDを追加
-#         unique_filename = "#{SecureRandom.uuid}_#{filename}"
-#         save_path = File.join(UPLOAD_DIR, unique_filename)
-    
-#         # ファイルを保存
-#         File.open(save_path, 'wb') do |f|
-#           f.write(tempfile.read)
-#         end
-    
-#         # DBには相対パスを保存
-#         icon_url = "/uploads/#{unique_filename}"
-#     end
-    
-#     user = User.create(
-#             name: params[:name],
-#             email: params[:email],
-#             password: params[:password],
-#             password_confirmation: params[:password_confirmation],
-#             icon_url: icon_url
-#             )
-    
-#     if user.persisted?
-#         session[:user_id] = user.id
-#         redirect '/login'
-#     else
-#         redirect '/signup'
-#     end
-# end
-
 post '/signup' do
-  puts "Received signup request"
-  puts "Params: #{params.inspect}"  # 送られてきたパラメータ全体を確認
+    icon_url = nil
 
-  if params[:file]
-    puts "File param: #{params[:file].inspect}"  # `params[:file]` のデータを確認
-  else
-    puts "No file found in params"
-  end
+    if params[:file] && params[:file][:tempfile]
+        filename = params[:file][:filename]
+        tempfile = params[:file][:tempfile]
 
-  if params[:file].is_a?(Hash) && params[:file][:tempfile]
-    puts "File params: #{params[:file].inspect}"
+        unique_filename = "#{SecureRandom.uuid}_#{filename}"
+        save_path = "./public/uploads/#{unique_filename}"
 
-    filename = params[:file][:filename]
-    tempfile = params[:file][:tempfile]
+        File.open(save_path, 'wb') do |f|
+            f.write(tempfile.read)
+        end
 
-    unique_filename = "#{SecureRandom.uuid}_#{filename}"
-    save_path = "./public/uploads/#{unique_filename}"
-
-    File.open(save_path, 'wb') do |f|
-      f.write(tempfile.read)
+        icon_url = "/uploads/#{unique_filename}"
     end
 
-    icon_url = "/uploads/#{unique_filename}"
-    puts "Icon URL: #{icon_url}"
-  else
-    puts "Invalid file format or no file uploaded"
-    icon_url = nil
-  end
-
-  user = User.create(
-    name: params[:name],
-    email: params[:email],
-    password: params[:password],
-    password_confirmation: params[:password_confirmation],
-    icon_url: icon_url
-  )
-
-  if user.persisted?
-    puts "User created successfully: #{user.inspect}"
-    session[:user_id] = user.id
-    redirect '/login'
-  else
-    puts "User creation failed: #{user.errors.full_messages}"
-    redirect '/signup'
-  end
+    user = User.create(
+        name: params[:name],
+        email: params[:email],
+        password: params[:password],
+        password_confirmation: params[:password_confirmation],
+        icon_url: icon_url
+    )
+    
+    if user.persisted?
+        session[:user_id] = user.id
+        redirect '/login'
+    else
+        redirect '/signup'
+    end
 end
-
-
 
 #login
 get '/login' do
