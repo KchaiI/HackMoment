@@ -1,4 +1,6 @@
 *{
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -91,7 +93,6 @@ main#unauthed-main{
 }
 
 main#authed-main{
-    display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -248,4 +249,69 @@ section#authed-main-section{
   justify-content: flex-start;
   gap: 8px;
   width: 100%;
+}
+
+
+/*#########################HOME#########################*/
+body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .post-container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .user-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .post-img {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+
+
+
+/*########################POST##########################*/
+#image-container {
+    width: 300px;
+    height: 300px;
+    border: 2px dashed #ddd;
+    position: relative;
+    overflow: hidden;
+    margin-top: 10px;
+    cursor: grab;
+}
+
+#image-container::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #333;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+}
+
+#image-preview {
+  display: none; max-width: 300px;
+    height: 300px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    overflow: hidden;
 }

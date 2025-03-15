@@ -2,6 +2,8 @@ require "bundler/setup"
 Bundler.require
 require "sinatra/reloader" if development?
 require "./models.rb"
+require 'fileutils'
+set :public_folder, 'public'
 require_relative "utils/date.rb"
 
 enable :sessions
@@ -31,12 +33,26 @@ get '/signup' do
 end
 
 post '/signup' do
+    if params[:file]
+        filename = params[:file][:filename]
+        tempfile = params[:file][:tempfile]
+        save_path = "./public/uploads/#{filename}"
+    
+        # アイコン画像を保存
+        FileUtils.copy(tempfile.path, save_path)
+        icon_url = "/uploads/#{filename}"
+      else
+        icon_url = nil # 画像がない場合は nil にする
+      end
+    
     user = User.create(
             name: params[:name],
             email: params[:email],
             password: params[:password],
-            password_confirmation: params[:password_confirmation]
+            password_confirmation: params[:password_confirmation],
+            icon_url: icon_url
             )
+    
     if user.persisted?
         session[:user_id] = user.id
         redirect '/login'
@@ -67,17 +83,21 @@ end
 ###########################################
 
 
+# get '/' do
+#     if @isAuthed
+#         post = Post.order(created_at: :desc)
+#         erb :home
+#     else
+#         erb :login
+#     end
+# end
+
 get '/' do
-  erb :index
+    erb :post
 end
 
 
 # 投稿機能#################################
-get '/post' do
-    @posts = Post.order(created_at: :desc)
-    erb :index
-end
-
 post '/post' do
     if @isAuthed
         post = Post.create(
