@@ -6,9 +6,8 @@ require 'securerandom'
 require 'active_support/all'
 set :public_folder, 'public'
 require_relative "utils/date.rb"
-Time.zone = ActiveSupport::TimeZone['Asia/Tokyo']
-puts "Time.zone.inspect => #{Time.zone.inspect}"
-
+Time.zone = 'Asia/Tokyo'
+ActiveRecord::Base.default_timezone = :local
 
 require "./models.rb"
 enable :sessions
@@ -29,10 +28,6 @@ end
 # 全てのリクエストの前に認証状態更新
 before do
     @isAuthed = logged_in?
-    puts "Current Time.zone: #{Time.zone.inspect}"
-  puts "Current ActiveRecord timezone: #{ActiveRecord::Base.default_timezone}"
-  puts "Current Ruby Time: #{Time.now}"
-  puts "Current Ruby Time (JST): #{Time.now.in_time_zone('Asia/Tokyo')}"
 end
 
 #login,signin,logout################################
