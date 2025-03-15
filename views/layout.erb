@@ -7,21 +7,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hack Moment</title>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="shortcut icon" href="img/favicon.ico"> 
 </head>
 <body>
   <% if logged_in? %>
     <main id="authed-main">
-      <!-- 左ナビゲーション -->
+       左ナビゲーション 
       <section id="nav-left">
         <%= erb :'nav-left' %>
       </section>
-      <!-- メインコンテンツ -->
+       メインコンテンツ 
       <section id="authed-main-section">
         <%= yield %>
       </section>
-      <!-- 右ナビゲーション -->
+       右ナビゲーション 
       <section id="nav-right">
         <%= erb :'nav-right' %>
       </section>
@@ -33,6 +34,9 @@
   <% end %>
   
   
+  <script src="//unpkg.com/@popperjs/core@2" defer></script>
+	<script src="//unpkg.com/tippy.js@6" defer></script>
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
   <script src="/js/script.js"></script>
 </body>
 </html>

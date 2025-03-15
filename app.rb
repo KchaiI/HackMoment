@@ -4,8 +4,12 @@ require "sinatra/reloader" if development?
 require 'fileutils'
 require 'securerandom'
 require 'active_support/all'
+require "json"
+require "date"
+
 set :public_folder, 'public'
 require_relative "utils/date.rb"
+
 Time.zone = 'Asia/Tokyo'
 ActiveRecord::Base.default_timezone = :local
 
@@ -103,7 +107,7 @@ end
 # end
 
 get '/' do
-    erb :signup
+    erb :schedule
 end
 
 
@@ -146,7 +150,37 @@ get '/notification' do
 end
 
 # スケジュール登録#########################
-post '/schedule' do
-    
+
+# スケジュールデータを取得（FullCalendar に渡す）
+get "/events" do
+  content_type :json
+  events = Schedule.all.map do |schedule|
+    {
+      id: schedule.id,
+      title: schedule.title,
+      start: schedule.start_time.iso8601,
+      end: schedule.end_time.iso8601
+    }
+  end
+  events.to_json
+end
+
+
+post "/schedules" do
+  request_data = JSON.parse(request.body.read)
+
+  schedule = Schedule.new(
+    title: request_data["title"],
+    start_time: DateTime.parse(request_data["start_time"]),
+    end_time: DateTime.parse(request_data["end_time"])
+  )
+
+  if schedule.save
+    status 201
+    schedule.to_json
+  else
+    status 400
+    { errors: schedule.errors.full_messages }.to_json
+  end
 end
 
