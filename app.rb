@@ -6,6 +6,8 @@ require 'securerandom'
 require 'active_support/all'
 require "json"
 require "date"
+require 'sidekiq'
+require 'sidekiq/api'
 
 set :public_folder, 'public'
 require_relative "utils/date.rb"
@@ -32,6 +34,15 @@ end
 # 全てのリクエストの前に認証状態更新
 before do
     @isAuthed = logged_in?
+end
+
+
+class ScheduleNotifier
+  include Sidekiq::Worker
+
+  def perform(schedule_id)
+    schedule = Schedule.find(schedule_id)
+  end
 end
 
 #login,signin,logout################################
@@ -151,16 +162,18 @@ end
 
 # スケジュール登録#########################
 get "/events" do
-  content_type :json
-  events = Schedule.all.map do |schedule| {
+    content_type :json
+    events = Schedule.all.map do |schedule| {
                 id: schedule.id,
                 start: schedule.start_time.iso8601,
                 end: schedule.end_time.iso8601,
                 color: "#3788d8",
+                display: "background",
                 backgroundColor: "#ccc",
+                
             }
         end
-  events.to_json
+    events.to_json
 end
 
 
@@ -173,6 +186,8 @@ post "/schedule" do
             )
 
     if schedule.save
+        delay = (schedule.start_time.to_time - Time.now).to_i
+        ScheduleNotifier.perform_in(delay, schedule.id)
         status 201
         schedule.to_json
     else

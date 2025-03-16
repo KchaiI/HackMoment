@@ -81,43 +81,51 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// document.addEventListener("DOMContentLoaded", function() {
-//     var today = new Date();
-//     var nextWeek = new Date();
-//     nextWeek.setDate(today.getDate() + 7);
-
-//     var todayStr = today.toISOString().split("T")[0]; // YYYY-MM-DD 形式
-//     var nextWeekStr = nextWeek.toISOString().split("T")[0];
-
-//     // 開始日と終了日の範囲制限
-//     document.getElementById("start_time").setAttribute("min", todayStr);
-//     document.getElementById("start_time").setAttribute("max", nextWeekStr);
-//     document.getElementById("end_time").setAttribute("min", todayStr);
-//     document.getElementById("end_time").setAttribute("max", nextWeekStr);
-
-//     // フォーム送信処理
-//     document.getElementById("schedule-form").addEventListener("submit", function(event) {
-//         event.preventDefault();
-
-//         var start_time = document.getElementById("start_time").value;
-//         var end_time = document.getElementById("end_time").value;
-
-//         fetch("/schedules", {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({
-//                 user_id: 1, // 仮のユーザーID
-//                 start_time: start_time,
-//                 end_time: end_time
-//             })
-//         })
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.errors) {
-//                 document.getElementById("message").textContent = "エラー: " + data.errors.join(", ");
-//             } else {
-//                 document.getElementById("message").textContent = "スケジュールを登録しました!";
+// 通知を許可するか確認
+// function requestNotificationPermission() {
+//     if ("Notification" in window) {
+//         Notification.requestPermission().then(function(permission) {
+//             if (permission === "granted") {
+//                 console.log("通知が許可されました");
 //             }
 //         });
+//     } else {
+//         console.log("このブラウザは通知をサポートしていません");
+//     }
+// }
+
+// // 初回ページ読み込み時に通知許可を求める
+// document.addEventListener("DOMContentLoaded", requestNotificationPermission);
+
+
+// // スケジュール通知をセット
+// function scheduleNotifications(events) {
+//     events.forEach(event => {
+//         let startTime = new Date(event.start).getTime();
+//         let now = new Date().getTime();
+//         let delay = startTime - now;
+
+//         if (delay > 0) {
+//             setTimeout(() => {
+//                 new Notification("予定の通知", {
+//                     body: `予定の時間です: ${event.title || "無題の予定"}`,
+//                     icon: "/icon.png" // 必要ならアイコンを指定
+//                 });
+//             }, delay);
+//         }
 //     });
+// }
+
+// // カレンダーのイベント取得時に通知をセット
+// document.addEventListener("DOMContentLoaded", function() {
+//     var calendarEl = document.getElementById("calendar");
+//     var calendar = new FullCalendar.Calendar(calendarEl, {
+//         initialView: "timeGridWeek",
+//         events: "/events", // 🔥 サーバーから予定データを取得
+//         eventDidMount: function(info) {
+//             scheduleNotifications([info.event]);
+//         }
+//     });
+
+//     calendar.render();
 // });
