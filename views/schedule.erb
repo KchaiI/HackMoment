@@ -1,14 +1,14 @@
-<div id='calendar'></div>
-
-<form action="/schedule" method="post" id="schedule-form">
-        <label for="title">タイトル:</label>
-        <input type="text" id="title" name="title" required>
+<form id="schedule-form">
 
         <label for="start_time">開始日時:</label>
         <input type="datetime-local" id="start_time" name="start_time" required>
-
+        
         <label for="end_time">終了日時:</label>
         <input type="datetime-local" id="end_time" name="end_time" required>
-
+        
         <button type="submit">登録</button>
-    </form>
+</form>
+
+<div id="message"></div>
+
+<div id='calendar'></div>

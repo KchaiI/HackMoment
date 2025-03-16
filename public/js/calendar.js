@@ -10,23 +10,20 @@ document.addEventListener("DOMContentLoaded", function() {
         slotMinTime: "08:00:00",
         slotMaxTime: "22:00:00",
         allDaySlot: false,
-        events: "/events" // 🔥 サーバーから予定データを取得
+        events: "/events"
     });
     calendar.render();
 
-    // **🔥 フォーム送信時の処理**
     document.getElementById("schedule-form").addEventListener("submit", function(event) {
-        event.preventDefault(); // 🔥 ページのリロードを防ぐ
+        event.preventDefault();
 
-        var title = document.getElementById("title").value;
         var start_time = document.getElementById("start_time").value;
         var end_time = document.getElementById("end_time").value;
 
-        fetch("/schedules", {
+        fetch("/schedule", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                title: title,
                 start_time: start_time,
                 end_time: end_time
             })
@@ -38,10 +35,8 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 document.getElementById("message").textContent = "スケジュールを登録しました!";
                 
-                // **🔥 フォームをリセット**
                 document.getElementById("schedule-form").reset();
                 
-                // **🔥 カレンダーを更新**
                 calendar.refetchEvents(); 
             }
         })

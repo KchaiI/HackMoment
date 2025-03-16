@@ -107,7 +107,7 @@ end
 # end
 
 get '/' do
-    erb :login
+    erb :schedule
 end
 
 
@@ -150,37 +150,34 @@ get '/notification' do
 end
 
 # スケジュール登録#########################
-
-# スケジュールデータを取得（FullCalendar に渡す）
 get "/events" do
   content_type :json
-  events = Schedule.all.map do |schedule|
-    {
-      id: schedule.id,
-      title: schedule.title,
-      start: schedule.start_time.iso8601,
-      end: schedule.end_time.iso8601
-    }
-  end
+  events = Schedule.all.map do |schedule| {
+                id: schedule.id,
+                start: schedule.start_time.iso8601,
+                end: schedule.end_time.iso8601,
+                color: "#3788d8",
+                backgroundColor: "#ccc",
+            }
+        end
   events.to_json
 end
 
 
-post "/schedules" do
-  request_data = JSON.parse(request.body.read)
+post "/schedule" do
+    request_data = JSON.parse(request.body.read)
 
-  schedule = Schedule.new(
-    title: request_data["title"],
-    start_time: DateTime.parse(request_data["start_time"]),
-    end_time: DateTime.parse(request_data["end_time"])
-  )
+    schedule = Schedule.new(
+                start_time: DateTime.parse(request_data["start_time"]),
+                end_time: DateTime.parse(request_data["end_time"])
+            )
 
-  if schedule.save
-    status 201
-    schedule.to_json
-  else
-    status 400
-    { errors: schedule.errors.full_messages }.to_json
-  end
+    if schedule.save
+        status 201
+        schedule.to_json
+    else
+        status 400
+        { errors: schedule.errors.full_messages }.to_json
+    end
 end
 
