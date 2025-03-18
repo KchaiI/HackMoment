@@ -8,6 +8,7 @@ require "json"
 require "date"
 require 'sidekiq'
 require 'sidekiq/api'
+require 'webpush'
 
 set :public_folder, 'public'
 require_relative "utils/date.rb"
@@ -36,14 +37,6 @@ before do
     @isAuthed = logged_in?
 end
 
-
-class ScheduleNotifier
-  include Sidekiq::Worker
-
-  def perform(schedule_id)
-    schedule = Schedule.find(schedule_id)
-  end
-end
 
 #login,signin,logout################################
 #singin
@@ -155,11 +148,6 @@ post '/post' do
 end
 
 
-# 通知機能#################################
-get '/notification' do
-    
-end
-
 # スケジュール登録#########################
 get "/events" do
     content_type :json
@@ -196,3 +184,81 @@ post "/schedule" do
     end
 end
 
+
+# 通知機能#########################################
+# 生成済みの VAPID 秘密鍵/公開鍵を環境変数や設定ファイルで読み込む
+VAPID_PUBLIC_KEY  = ENV['VAPID_PUBLIC_KEY']  || "BGvB08SENPxLoe7kA9PYBsvh0go3oMwSpun4eRX0n8iQsod-F5NnWrsYspdKh-B6UUTfBESaZzqhIrOQ77ZRdIc"
+VAPID_PRIVATE_KEY = ENV['VAPID_PRIVATE_KEY'] || "j8zxyQ5DkxeY_MLgnYalYn51Sjkut0gXQO3e2Diwwug"
+VAPID_SUBJECT     = "mailto:iciak.0127@gmail.com"
+
+post '/subscribe' do
+    subscription = JSON.parse(request.body.read)
+    Subscription.find_or_create_by(endpoint: subscription["endpoint"]) do |sub|
+        sub.p256dh = subscription["keys"]["p256dh"]
+        sub.auth = subscription["keys"]["auth"]
+        sub.user_id = session[:user_id]
+    end
+    status 201
+end
+
+post '/send_notification' do
+    title = params[:title] || "テスト通知タイトル"
+    body  = params[:body]  || "テスト通知本文"
+
+    subscriptions = Subscription.all
+    subscriptions.each do |sub|
+      send_push(sub.endpoint, sub.p256dh, sub.auth, title, body)
+    end
+
+    "通知送信しました"
+end
+
+def send_push(endpoint, p256dh, auth, title, body)
+    Webpush.payload_send(
+        endpoint: endpoint,
+        message: JSON.dump({ title: title, body: body }),
+        p256dh: p256dh,
+        auth: auth,
+        vapid: {
+          subject:     VAPID_SUBJECT,
+          public_key:  VAPID_PUBLIC_KEY,
+          private_key: VAPID_PRIVATE_KEY
+        }
+    )
+end
+
+
+class ScheduleNotifier
+  include Sidekiq::Worker
+
+  def perform(schedule_id)
+    schedule = Schedule.find(schedule_id)
+    user = schedule.user
+
+    # ユーザーに紐づいているPush購読情報を取得
+    subscriptions = Subscription.where(user_id: user.id)
+
+    # 予定開始時間が近い旨を通知(タイトルや本文はお好みで)
+    title = "予定の開始が近づいています"
+    body  = "あと5分ほどで予定が始まります（開始: #{schedule.start_time}）"
+
+    subscriptions.each do |sub|
+      Webpush.payload_send(
+        endpoint: sub.endpoint,
+        message:  JSON.dump({ title: title, body: body }),
+        p256dh:   sub.p256dh,
+        auth:     sub.auth,
+        vapid: {
+          subject:     "mailto:iciak.0127@gmail.com",
+          public_key:  ENV['VAPID_PUBLIC_KEY'],
+          private_key: ENV['VAPID_PRIVATE_KEY']
+        }
+      )
+    end
+  end
+end
+
+
+get '/notification' do
+    
+end

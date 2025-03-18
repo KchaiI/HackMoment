@@ -12,6 +12,8 @@ class User < ActiveRecord::Base
     has_many :likes
     has_many :follows
     has_many :notification
+    has_many :schedules
+    has_many :subscriptions
 end
 
 class Post < ActiveRecord::Base
@@ -38,3 +40,6 @@ class Notification < ActiveRecord::Base
     belongs_to :user
 end
 
+class Subscription < ActiveRecord::Base
+    belongs_to :user
+end

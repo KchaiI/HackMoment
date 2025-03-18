@@ -11,6 +11,7 @@ gem 'sinatra-activerecord', '~> 2.0'
 gem 'sinatra-contrib', '~> 2.1'
 gem 'webrick', '~> 1.7'
 gem 'sidekiq'
+gem 'webpush', '~> 1.1'
 
 group :development do
     gem 'htmlbeautifier'

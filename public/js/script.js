@@ -81,51 +81,61 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// 通知を許可するか確認
-// function requestNotificationPermission() {
-//     if ("Notification" in window) {
-//         Notification.requestPermission().then(function(permission) {
-//             if (permission === "granted") {
-//                 console.log("通知が許可されました");
-//             }
-//         });
-//     } else {
-//         console.log("このブラウザは通知をサポートしていません");
-//     }
-// }
 
-// // 初回ページ読み込み時に通知許可を求める
-// document.addEventListener("DOMContentLoaded", requestNotificationPermission);
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!('serviceWorker' in navigator)) {
+    console.log("Service Worker未対応のブラウザです。");
+    return;
+  }
 
+  // 通知の権限を確認し、未許可('default')ならリクエスト
+  if (Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
 
-// // スケジュール通知をセット
-// function scheduleNotifications(events) {
-//     events.forEach(event => {
-//         let startTime = new Date(event.start).getTime();
-//         let now = new Date().getTime();
-//         let delay = startTime - now;
+  try {
+    // 1) Service Worker登録
+    const registration = await navigator.serviceWorker.register('/js/service-worker.js');
+    console.log("Service Worker登録完了:", registration);
 
-//         if (delay > 0) {
-//             setTimeout(() => {
-//                 new Notification("予定の通知", {
-//                     body: `予定の時間です: ${event.title || "無題の予定"}`,
-//                     icon: "/icon.png" // 必要ならアイコンを指定
-//                 });
-//             }, delay);
-//         }
-//     });
-// }
+    // 2) VAPID公開鍵を JS で使える形 (Uint8Array) に変換
+    //   あなたがNode.jsで生成したpublic key(base64URL)を、ソース内 or 環境変数などで読み込む
+    const vapidPublicKey = "BGvB08SENPxLoe7kA9PYBsvh0go3oMwSpun4eRX0n8iQsod-F5NnWrsYspdKh-B6UUTfBESaZzqhIrOQ77ZRdIc"; 
+    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
-// // カレンダーのイベント取得時に通知をセット
-// document.addEventListener("DOMContentLoaded", function() {
-//     var calendarEl = document.getElementById("calendar");
-//     var calendar = new FullCalendar.Calendar(calendarEl, {
-//         initialView: "timeGridWeek",
-//         events: "/events", // 🔥 サーバーから予定データを取得
-//         eventDidMount: function(info) {
-//             scheduleNotifications([info.event]);
-//         }
-//     });
+    // 3) プッシュ購読を行う
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: convertedVapidKey
+    });
 
-//     calendar.render();
-// });
+    console.log("購読完了:", subscription);
+
+    // 4) サーバーに購読情報を送信
+    await fetch('/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(subscription)
+    });
+    console.log("サーバー側に購読情報を登録しました。");
+
+  } catch (err) {
+    console.error("購読処理に失敗:", err);
+  }
+});
+
+/**
+ * Base64URL -> Uint8Array 変換用のヘルパー
+ */
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64  = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
