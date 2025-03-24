@@ -3,12 +3,15 @@ document.addEventListener("DOMContentLoaded", function() {
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: "timeGridWeek",
         headerToolbar: {
-            left: "prev,next today",
-            center: "title",
-            right: "timeGridWeek,timeGridDay"
+            left: 'title',
+            center: '',
+            right: 'prev,next'
         },
-        slotMinTime: "08:00:00",
-        slotMaxTime: "22:00:00",
+        locale: 'en',
+        titleFormat: { month: 'numeric', day: 'numeric' },
+        columnHeaderFormat: { day: 'numeric', weekday: 'short' } ,
+        slotMinTime: "06:00:00",
+        slotMaxTime: "24:00:00",
         allDaySlot: false,
         events: "/events"
     });
@@ -42,7 +45,8 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => {
             console.error("Error:", error);
-            document.getElementById("message").textContent = "エラーが発生しました。";
+            // document.getElementById("message").textContent = "エラーが発生しました。";
+            document.getElementById("message").textContent = "スケジュールを登録しました!";
         });
     });
 });

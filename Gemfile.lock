@@ -14,6 +14,23 @@ GEM
       zeitwerk (~> 2.3)
     base64 (0.2.0)
     bcrypt (3.1.20)
+    celluloid (0.17.4)
+      celluloid-essentials
+      celluloid-extras
+      celluloid-fsm
+      celluloid-pool
+      celluloid-supervision
+      timers (>= 4.1.1)
+    celluloid-essentials (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-extras (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-fsm (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-pool (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-supervision (0.20.6)
+      timers (>= 4.1.1)
     concurrent-ruby (1.2.3)
     connection_pool (2.5.0)
     dotenv (2.8.1)
@@ -21,9 +38,9 @@ GEM
     htmlbeautifier (1.4.3)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
+    json (1.8.6)
     jwt (2.10.1)
       base64
-    logger (1.6.6)
     minitest (5.23.1)
     multi_json (1.15.0)
     mustermann (2.0.2)
@@ -33,15 +50,16 @@ GEM
     rack-protection (2.2.4)
       rack
     rake (13.2.1)
-    redis-client (0.24.0)
-      connection_pool
+    redis (3.3.5)
+    redis-namespace (1.8.2)
+      redis (>= 3.0.4)
     ruby2_keywords (0.0.5)
-    sidekiq (7.3.9)
-      base64
-      connection_pool (>= 2.3.0)
-      logger
-      rack (>= 2.2.4)
-      redis-client (>= 0.22.2)
+    sidekiq (3.5.4)
+      celluloid (~> 0.17.2)
+      connection_pool (~> 2.2, >= 2.2.0)
+      json (~> 1.0)
+      redis (~> 3.2, >= 3.2.1)
+      redis-namespace (~> 1.5, >= 1.5.2)
     sinatra (2.2.4)
       mustermann (~> 2.0)
       rack (~> 2.2)
@@ -57,6 +75,7 @@ GEM
       sinatra (= 2.2.4)
       tilt (~> 2.0)
     tilt (2.3.0)
+    timers (4.3.5)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     webpush (1.1.0)
@@ -76,7 +95,7 @@ DEPENDENCIES
   htmlbeautifier
   pg (~> 1.2)
   rake (~> 13.0)
-  sidekiq
+  sidekiq (~> 3.5, >= 3.5.4)
   sinatra (~> 2.1)
   sinatra-activerecord (~> 2.0)
   sinatra-contrib (~> 2.1)

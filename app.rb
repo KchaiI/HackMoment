@@ -100,6 +100,14 @@ get '/logout' do
 end
 ###########################################
 
+get '/home' do
+    if @isAuthed
+        @posts = Post.includes(:user).order(created_at: :desc) rescue []
+        erb :home
+    else
+        erb :login
+    end
+end
 
 # get '/' do
 #     if @isAuthed
@@ -111,41 +119,82 @@ end
 # end
 
 get '/' do
-    erb :schedule
+    erb :post
 end
 
 
 # 投稿機能#################################
-post '/post' do
-    if @isAuthed
-        img_url = nil
+# post '/post' do
+#     if @isAuthed
+#         img_url = nil
 
-        if params[:img] && params[:img][:tempfile]
-            filename = params[:img][:filename]
-            tempfile = params[:img][:tempfile]
+#         if params[:img] && params[:img][:tempfile]
+#             filename = params[:img][:filename]
+#             tempfile = params[:img][:tempfile]
     
-            unique_filename = "#{SecureRandom.uuid}_#{filename}"
-            save_path = "./public/uploads/#{unique_filename}"
+#             unique_filename = "#{SecureRandom.uuid}_#{filename}"
+#             save_path = "./public/uploads/#{unique_filename}"
     
-            # 画像を保存
-            File.open(save_path, 'wb') do |f|
-                f.write(tempfile.read)
-            end
+#             # 画像を保存
+#             File.open(save_path, 'wb') do |f|
+#                 f.write(tempfile.read)
+#             end
     
-            # DBには相対パスを保存
-            img_url = "/uploads/#{unique_filename}"
-        end
+#             # DBには相対パスを保存
+#             img_url = "/uploads/#{unique_filename}"
+#         end
         
-        post = Post.create(
-                img: img_url,
-                text: params[:text],
-                user_id: session[:user_id]
-                )
-        redirect '/'
-    else
-        redirect '/login'
-    end
+#         post = Post.create(
+#                 img: img_url,
+#                 text: params[:text],
+#                 user_id: session[:user_id]
+#                 )
+#         redirect '/'
+#     else
+#         redirect '/login'
+#     end
+# end
+
+get '/post' do
+    erb :post
 end
+
+post '/posts' do
+  # `cropped_image` には "data:image/png;base64,..." の文字列が入っている
+  base64_str = params[:cropped_image]   # フォームで送られてきた hidden input
+  content    = params[:content]         # コメント
+
+  if base64_str && base64_str.start_with?('data:image')
+    # "data:image/png;base64," のヘッダを取り除く
+    header, base64_data = base64_str.split(',', 2)  # [0]=data:image/png;base64, [1]=実際のBase64本文
+    image_data = Base64.decode64(base64_data)
+
+    # public/uploads/ に保存 (事前にフォルダ作成しておく)
+    filename = "post_#{Time.now.to_i}.png"
+    filepath = File.join(settings.public_folder, 'uploads', filename)
+    File.open(filepath, 'wb') do |f|
+      f.write(image_data)
+    end
+
+    # DBのimg カラムには "/uploads/ファイル名" を保存
+    # 例: postテーブル (img, text, user_id など)
+    @post = Post.create(
+      img: "/uploads/#{filename}",
+      text: content,
+      user_id: session[:user_id]  # ログインユーザーIDなどがあれば
+    )
+  else
+    # 画像がなかったり不正だった場合の処理
+    @post = Post.create(
+      img: nil,
+      text: content,
+      user_id: session[:user_id]
+    )
+  end
+
+  redirect '/home'
+end
+
 
 
 # スケジュール登録#########################
@@ -155,16 +204,38 @@ get "/events" do
                 id: schedule.id,
                 start: schedule.start_time.iso8601,
                 end: schedule.end_time.iso8601,
-                color: "#3788d8",
+                color: "#156292",
                 display: "background",
-                backgroundColor: "#ccc",
+                backgroundColor: "#156292",
                 
             }
         end
     events.to_json
 end
 
-
+get "/schedule" do
+    begin
+  # JSONを返すなら:
+  content_type :json
+  if schedule.save
+  schedules = Schedule.all.map do |sched|
+    { 
+      id: sched.id, 
+      start: sched.start_time.iso8601, 
+      end: sched.end_time.iso8601
+    }
+  end
+  schedules.to_json
+  else 
+      { errors: schedule.errors.full_messages }.to_json
+    end
+    rescue => e
+    puts e.message
+    puts e.backtrace
+    status 500
+    { error: e.message }.to_json
+  end
+end
 
 post "/schedule" do
     request_data = JSON.parse(request.body.read)

@@ -7,18 +7,41 @@
 <!--  <button type="submit">ポストする</button>-->
 <!--</form>-->
 
-<form action="/posts" method="post" enctype="multipart/form-data">
-  <label for="image">画像を選択:</label><br>
-  <input type="file" name="img" id="image-input" accept="image/*"><br><br>
-  <div id="image-container">
-    <img id="image-preview" src="" alt="">
-  </div>
-  <button id="reset-btn">リセット</button>
-  <label for="content">コメント:</label><br>
-  <textarea name="content" id="content" rows="4" cols="50" required></textarea><br><br>
+<!--<form action="/posts" method="post" enctype="multipart/form-data">-->
+<!--  <label for="image">画像を選択:</label><br>-->
+<!--  <input type="file" name="img" id="image-input" accept="image/*"><br><br>-->
+<!--  <div id="image-container">-->
+<!--    <img id="image-preview" src="" alt="">-->
+<!--  </div>-->
+<!--  <button id="reset-btn">リセット</button>-->
+<!--  <label for="content">コメント:</label><br>-->
+<!--  <textarea name="content" id="content" rows="4" cols="50" required></textarea><br><br>-->
 
 
-  <button type="submit">投稿する</button>
-</form>
+<!--  <button type="submit">投稿する</button>-->
+<!--</form>-->
+
+<form id="post-form" action="/posts" method="post">
+    <!-- ※ このフォームに対して最終的な切り抜き済み画像を hidden で送る想定 -->
+    <label for="image-input">画像を選択:</label>
+    <input type="file" id="image-input" accept="image/*"><br><br>
+
+    <!-- ここに、選択した画像が表示され Cropper.js が動作する -->
+    <div style="width: 400px; max-height: 400px; overflow: hidden;">
+      <img id="cropper-image" src="" style="max-width: 100%;" alt="Cropping Preview">
+    </div>
+    <br>
+
+    <button type="button" id="crop-btn">この位置で切り抜く</button>
+    <input type="hidden" name="cropped_image" id="cropped-image">
+
+    <div>
+      <label for="content">コメント：</label><br>
+      <textarea name="content" id="content" rows="3" cols="50"></textarea>
+    </div>
+
+    <br>
+    <button type="submit">投稿する</button>
+  </form>
 
 

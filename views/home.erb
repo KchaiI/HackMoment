@@ -1,9 +1,19 @@
-<div class="post-container">
-    <div class="user-info">
-      <img src="<%= @user.icon_url %>" alt="User Icon" class="user-icon">
-      <strong><%= @user.name %></strong>
+<% if @posts && @posts.any? %>
+  <% @posts.each do |post| %>
+    <div class="post-container">
+      <div class="user-info">
+        <% if post.user.icon_url %>
+          <img src="<%= post.user.icon_url %>" alt="User Icon" class="user-icon">
+        <% end %>
+        <strong><%= post.user.name %></strong>
+      </div>
+      <% if post.img && !post.img.empty? %>
+        <img src="<%= post.img %>" alt="Post Image" class="post-img">
+      <% end %>
+      <p><%= post.text %></p>
+      <small>投稿日時: <%= post.created_at.strftime("%Y-%m-%d %H:%M") %></small>
     </div>
-    <img src="<%= @post.img %>" alt="Post Image" class="post-img">
-    <p><%= @post.text %></p>
-    <small>投稿日時: <%= @post.created_at.strftime("%Y-%m-%d %H:%M") %></small>
-  </div>
+  <% end %>
+<% else %>
+  <p>投稿はありません。</p>
+<% end %>
