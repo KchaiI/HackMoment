@@ -2,9 +2,9 @@
   <% @posts.each do |post| %>
     <div class="post-container">
       <div class="user-info">
-        <% if post.user.icon_url %>
-          <img src="<%= post.user.icon_url %>" alt="User Icon" class="user-icon">
-        <% end %>
+        <!--<% if post.user.icon_url %>-->
+        <!--  <img src="<%= post.user.icon_url %>" alt="User Icon" class="user-icon">-->
+        <!--<% end %>-->
         <strong><%= post.user.name %></strong>
       </div>
       <% if post.img && !post.img.empty? %>

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         locale: 'en',
         titleFormat: { month: 'numeric', day: 'numeric' },
-        columnHeaderFormat: { day: 'numeric', weekday: 'short' } ,
+        dayHeaderFormat: { day: 'numeric', weekday: 'short' },
         slotMinTime: "06:00:00",
         slotMaxTime: "24:00:00",
         allDaySlot: false,
@@ -45,8 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => {
             console.error("Error:", error);
-            // document.getElementById("message").textContent = "エラーが発生しました。";
-            document.getElementById("message").textContent = "スケジュールを登録しました!";
+            document.getElementById("message").textContent = "エラーが発生しました。";
         });
     });
 });

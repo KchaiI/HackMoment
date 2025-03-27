@@ -119,7 +119,7 @@ end
 # end
 
 get '/' do
-    erb :post
+    erb :login
 end
 
 
@@ -213,28 +213,32 @@ get "/events" do
     events.to_json
 end
 
-get "/schedule" do
-    begin
-  # JSONを返すなら:
-  content_type :json
-  if schedule.save
-  schedules = Schedule.all.map do |sched|
-    { 
-      id: sched.id, 
-      start: sched.start_time.iso8601, 
-      end: sched.end_time.iso8601
-    }
-  end
-  schedules.to_json
-  else 
-      { errors: schedule.errors.full_messages }.to_json
-    end
-    rescue => e
-    puts e.message
-    puts e.backtrace
-    status 500
-    { error: e.message }.to_json
-  end
+# get "/schedule" do
+#     begin
+#   # JSONを返すなら:
+#   content_type :json
+#   if schedule.save
+#   schedules = Schedule.all.map do |sched|
+#     { 
+#       id: sched.id, 
+#       start: sched.start_time.iso8601, 
+#       end: sched.end_time.iso8601
+#     }
+#   end
+#   schedules.to_json
+#   else 
+#       { errors: schedule.errors.full_messages }.to_json
+#     end
+#     rescue => e
+#     puts e.message
+#     puts e.backtrace
+#     status 500
+#     { error: e.message }.to_json
+#   end
+# end
+
+get '/schedule' do
+    erb :schedule
 end
 
 post "/schedule" do
